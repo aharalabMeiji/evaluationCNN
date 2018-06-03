@@ -1,3 +1,4 @@
 *.dcl
 *.tlog
 *.idb
+.vs/

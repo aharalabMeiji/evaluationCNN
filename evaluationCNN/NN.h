@@ -22,5 +22,7 @@ public:
 	void runNN(int vNum);
 	void coutValues();
 	void coutX1();
+	void coutX2();
+	void coutX1X2();
 };
 

@@ -47,6 +47,15 @@ void NN::loadDataFromFile(const char* filename){
 			}
 		}
 	}
+	for (int j = 0; j < X2m; j++) {
+		if (ifs.getline(str, 40 - 1)) {
+			X2[j] = (float)atof(str);
+		}
+		else {
+			std::cerr << "Ž¸”s" << std::endl;
+			return;
+		}
+	}
 }
 
 void NN::saveDataToFile(const char* filename) {
@@ -55,6 +64,9 @@ void NN::saveDataToFile(const char* filename) {
 		for (int j = 0; j < X2m; j++) {
 			ofs << X1[k][j] << endl;
 		}
+	}
+	for (int j = 0; j < X2m; j++) {
+		ofs << X2[j] << endl;
 	}
 	ofs.close();
 }
@@ -103,6 +115,16 @@ float NN::getDerivativeX2(int j) {
 
 void NN::runNN(int vNum) {
 	for (int j = 0; j < X2m; j++) {
+		float dd = getDerivativeX2(j);
+		if (dd != 0.0) {
+			float fn = 0.001f / dd;
+			if (fn < -0.1f) fn = -0.1f;
+			if (fn > 0.1f) fn = 0.1f;
+			X2[j] -= fn;
+		}
+	}
+	cout << "X2:" << energyFunctional() / vNum << endl;
+	for (int j = 0; j < X2m; j++) {
 		for (int k = 0; k < X1m; k++) {
 			float dd = getDerivativeX1(k, j);
 			if (dd != 0.0) {
@@ -113,16 +135,7 @@ void NN::runNN(int vNum) {
 			}
 		}
 		cout << "X1:" << j << ":" << energyFunctional() / vNum << endl;
-		float dd = getDerivativeX2(j);
-		if (dd != 0.0) {
-			float fn = 0.001f / dd;
-			if (fn < -0.1f) fn = -0.1f;
-			if (fn > 0.1f) fn = 0.1f;
-			X2[j] -= fn;
-		}
-		cout << "X2:" << energyFunctional() / vNum << endl;
 	}
-	cout << "----------------" << energyFunctional() / vNum << endl;
 }
 
 
@@ -144,6 +157,35 @@ void NN::coutX1()
 	}
 	cout << "};" << endl;
 }
+
+void NN::coutX2()
+{
+	cout << "float X2[" << X2m << "]={ " << endl;
+	for (int j = 0; j < X2m; j++) {
+		cout << X2[j];
+		if (j < X2m - 1) {
+			cout << ",";
+		}
+	}
+	cout << "};" << endl;
+}
+
+void NN::coutX1X2()
+{
+	cout << "float X1X2[" << X1m << "]={ " << endl;
+	for (int k = 0; k<X1m; k++) {
+		float v = 0.0f;
+		for (int j = 0; j < X2m; j++) {
+			v += (X1[k][j] * X2[j]);
+		}
+		cout << v;
+		if (k < X1m - 1) {
+			cout << ",";
+		}
+	}
+	cout << "};" << endl;
+}
+
 
 void NN::coutValues()
 {
