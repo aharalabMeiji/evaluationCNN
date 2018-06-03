@@ -71,16 +71,22 @@ void NN::saveDataToFile(const char* filename) {
 	ofs.close();
 }
 
+float sigmoid(float x) {
+	return 1 / (1 + expf(-x));
+}
+
 float NN::energyFunctional(){
 	float ret = 0.0f;
-	for (ESTIMATION e : estVec) {
-		float v = 0.0;
+	float v, w;
+	for(ESTIMATION e : estVec) {
+		v = 0.0f;
 		for (int j = 0; j < X2m; j++) {
-			float w = 0.0f;
+			w = 0.0f;
 			for (int k = 0; k < X1m; k++) {
 				w += (e.est[k] * X1[k][j]);
 			}
-			v += (w *X2[j]);
+			//v += (w *X2[j]);
+			v += (sigmoid(w) *X2[j]);
 		}
 		float a = (e.evaluation - v);
 		if (a < 0)a = -a;
