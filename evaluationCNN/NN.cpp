@@ -196,12 +196,16 @@ void NN::coutX1X2()
 void NN::coutValues()
 {
 	float ret = 0.0f;
+	float v, w;
 	for (ESTIMATION e : estVec) {
-		float v = 0.0f;
-		for (int k = 0; k < X1m; k++) {
-			for (int j = 0; j < X2m; j++) {
-				v += (e.est[k] * X1[k][j] * X2[j]);
+		v = 0.0f;
+		for (int j = 0; j < X2m; j++) {
+			w = 0.0f;
+			for (int k = 0; k < X1m; k++) {
+				w += (e.est[k] * X1[k][j]);
 			}
+			//v += (w *X2[j]);
+			v += (sigmoid(w) *X2[j]);
 		}
 		cout << e.evaluation << "=" << v << endl;
 	}
